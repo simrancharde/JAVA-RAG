@@ -1,9 +1,32 @@
+"use client";
+
 import Image from "next/image";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useSyncExternalStore } from "react";
 
 export default function Home() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const mounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false,
+  );
+
+  const isDark = mounted && resolvedTheme === "dark";
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+    <div className="flex flex-1 flex-col items-center justify-center bg-background font-sans text-foreground transition-colors">
       <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <button
+          type="button"
+          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          onClick={() => setTheme(isDark ? "light" : "dark")}
+          className="self-end rounded-full border border-border bg-background p-2 text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
+          {mounted && isDark ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
         <Image
           className="dark:invert h-5 w-[100px]"
           src="/next.svg"
